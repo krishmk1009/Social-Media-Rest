@@ -5,6 +5,7 @@ const morgan = require('morgan')
 const dotenv = require('dotenv')
 const userRouter = require("./Router/users")
 const authRouter = require("./Router/auth")
+const postRouter = require("./Router/posts")
 const app = express();
 const PORT = 3000
 
@@ -17,6 +18,7 @@ app.use(morgan("common"))
 
 app.use('/auth', authRouter)
 app.use('/api/user', userRouter)
+app.use('/api/posts', postRouter)
 
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true }, () => {
     console.log("connected succesfully")
