@@ -16,6 +16,7 @@ app.use(helmet())
 app.use(morgan("common"))
 
 app.use('/auth', authRouter)
+app.use('/api/user', userRouter)
 
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true }, () => {
     console.log("connected succesfully")
