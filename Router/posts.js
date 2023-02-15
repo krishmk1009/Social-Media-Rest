@@ -62,5 +62,58 @@ router.delete('/:id', async (req, res) => {
     }
 })
 
+//like
+// http://localhost:3000/api/posts/63ece8df28cbce256935a1e2/like
+router.put('/:id/like', async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id)
+        if (post) {
+            if (!post.likes.includes(req.body.userId)) {
+                await post.updateOne({ $push: { likes: req.body.userId } })
+                res.status(200).json("liked a post")
+            }
+            else {
+                await post.updateOne({ $pull: { likes: req.body.userId } })
+                res.status(200).json("disliked a post")
+            }
+        } else {
+            res.status(404).json("Post not found")
+        }
+    }
+    catch (err) {
+        res.status(500).json(err)
+    }
+})
 
+
+//get a post
+// http://localhost:3000/api/posts/63ece8df28cbce256935a1e2
+router.get('/:id', async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+        if (post) {
+            res.status(200).json(post)
+        }
+        else {
+            res.status(403).json("post not found")
+        }
+
+    }
+    catch (err) {
+        res.status(200).json(err)
+    }
+})
+
+//fetch all post
+
+router.get('/timeline/all', async (req, res) => {
+    const currentUser = await User.findById(req.body.userId);
+    const userPosts = await Post.find({ userId: currentUser._id })
+    const friendPosts = await Promise.all(
+        currentUser.following.map((friendId) => {
+            Post.find({ userId: friendId })
+        })
+    );
+    res.status(200).json(err)
+})
 module.exports = router
